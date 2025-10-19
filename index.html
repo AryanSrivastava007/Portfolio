@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aryan Srivastava | Backend and Automation Engineer</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide-react@latest/dist/lucide-react.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#38bdf8', // Light Blue
+                        'primary-hover': '#0ea5e9',
+                        'background': '#0f172a', // Slate 900
+                        'card': '#1e293b', // Slate 800
+                        'text-main': '#f1f5f9', // Slate 100
+                        'text-secondary': '#94a3b8', // Slate 400
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Simple scrollbar styling for a more modern look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #38bdf8;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0ea5e9;
+        }
+        .typing-cursor {
+            display: inline-block;
+            width: 1ch;
+            border-right: 2px solid #38bdf8; /* matches --primary */
+            animation: blink 1s steps(1, end) infinite;
+            margin-left: 2px;
+            height: 1em;
+            transform: translateY(2px);
+        }
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+        /* Subtle grid background across the whole page */
+        .grid-bg {
+            /* keep the Tailwind background color from .bg-background */
+            background-image:
+                linear-gradient(to right, rgba(148,163,184,0.07) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(148,163,184,0.07) 1px, transparent 1px);
+            background-size: 32px 32px;
+            background-position: top left;
+            background-attachment: fixed; /* stays put while content scrolls */
+        }
+
+        /* 3D Grid Background Layer */
+        .grid3d-wrap {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+            perspective: 1000px;
+        }
+        .grid3d-plane {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 250vw;
+            height: 250vh;
+            background-image:
+                linear-gradient(to right, rgba(56,189,248,0.2) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(56,189,248,0.2) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: translate(-50%, -50%) rotateX(65deg);
+            animation: grid3d-pan 30s linear infinite;
+            filter: drop-shadow(0 0 6px rgba(56,189,248,0.15));
+        }
+        .grid3d-glow {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(56,189,248,0.25), transparent 70%);
+            mix-blend-mode: screen;
+            pointer-events: none;
+        }
+        @keyframes grid3d-pan {
+            from { background-position: 0 0, 0 0; }
+            to { background-position: 1000px 1000px, 1000px 1000px; }
+        }
+    </style>
+</head>
+<body class="bg-background grid-bg text-text-main font-sans antialiased">
+
+    <!-- 3D Grid Background -->
+    <div class="grid3d-wrap">
+        <div class="grid3d-plane"></div>
+        <div class="grid3d-glow"></div>
+    </div>
+
+    <!-- Header & Navigation -->
+    <header class="bg-background/80 backdrop-blur-sm fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="#" class="text-2xl font-bold text-primary">AS</a>
+                <nav class="hidden md:flex items-center md:space-x-8 relative">
+                    <a href="#about" class="text-text-secondary hover:text-primary transition-colors duration-300">About</a>
+                    <a href="#skills" class="text-text-secondary hover:text-primary transition-colors duration-300">Skills</a>
+                    <a href="#projects" class="text-text-secondary hover:text-primary transition-colors duration-300">Projects</a>
+                    <a href="#experience" class="text-text-secondary hover:text-primary transition-colors duration-300">Experience</a>
+                    <a href="#contact" class="text-text-secondary hover:text-primary transition-colors duration-300">Contact</a>
+                    <!-- Integrated Links trigger -->
+                    <button id="links-trigger" type="button" aria-haspopup="true" aria-expanded="false" class="text-text-secondary hover:text-primary transition-colors duration-300 font-medium inline-flex items-center">
+                        Links
+                        <svg class="w-4 h-4 ml-1 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <!-- Panel anchored to nav -->
+                    <div id="links-panel" class="absolute right-0 top-12 w-72 bg-card/95 backdrop-blur-md border border-primary/30 rounded-xl shadow-2xl p-4 hidden">
+                        <p class="text-text-secondary text-xs mb-3">Quick social links</p>
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+                            <a href="https://github.com/AryanSrivastava007" class="text-text-secondary hover:text-primary transition-colors" target="_blank" rel="noopener">GitHub</a>
+                            <a href="https://www.linkedin.com/in/aryan-srivastava-605b3a220/" class="text-text-secondary hover:text-primary transition-colors" target="_blank" rel="noopener">LinkedIn</a>
+                            <a href="mailto:aryansrivastava04643@gmail.com" class="text-text-secondary hover:text-primary transition-colors">Email</a>
+                            <a href="Aryan Srivastava 8th Oct Resume (1)" class="text-text-secondary hover:text-primary transition-colors" target="_blank" rel="noopener">Resume</a>
+                            <a href="https://x.com/ARYANSRI04643" class="text-text-secondary hover:text-primary transition-colors" target="_blank" rel="noopener">Twitter/X</a>
+                            <a href="#" class="text-text-secondary hover:text-primary transition-colors" target="_blank" rel="noopener">Portfolio</a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+                <!-- Mobile Nav Toggle (optional, not implemented for simplicity) -->
+                 <div class="md:hidden">
+                    <!-- A simple placeholder for a potential hamburger icon -->
+                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 pt-24">
+
+        <!-- Hero Section -->
+        <section id="home" class="min-h-[80vh] flex items-center">
+            <div class="max-w-3xl">
+                <p class="text-lg text-primary font-medium">Hi, my name is</p>
+                <h1 id="hero-name" class="text-5xl md:text-7xl font-bold mt-2 text-text-main will-change-transform origin-left">Aryan Srivastava</h1>
+                <div id="hero-rotator" class="text-3xl md:text-5xl font-bold mt-2 text-primary will-change-transform origin-left transition-opacity duration-300">
+                    <span id="hero-rotator-text"></span><span class="typing-cursor" aria-hidden="true"></span>
+                </div>
+                <h2 class="text-4xl md:text-6xl font-bold mt-2 text-text-secondary">I build scalable backend systems and automation frameworks.</h2>
+                <p class="mt-6 text-lg text-text-secondary max-w-xl">
+                    I’m a Python Backend Developer and Automation Engineer based in Chennai, India. I specialize in designing scalable backend systems, RESTful APIs, and automation frameworks using Django, FastAPI, and Selenium–PyTest. Currently, I’m focused on building high-performance systems that bridge backend reliability with automation efficiency.
+                </p>
+                <a href="#contact" class="inline-block bg-primary text-background font-bold py-3 px-6 rounded-md mt-8 hover:bg-primary-hover transition-transform duration-300 hover:scale-105">
+                    Get In Touch
+                </a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-20">
+            <h2 class="text-3xl font-bold mb-8 flex items-center">
+                <span class="text-primary mr-3">01.</span> About Me
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-10 items-center">
+                <div class="md:col-span-3 text-text-secondary text-lg space-y-4">
+                    <p>
+                        Hello! I'm Aryan Srivastava, a <span class="font-semibold text-text-main">Python Backend Developer</span> and <span class="font-semibold text-text-main">Automation Engineer</span> passionate about building <span class="font-semibold text-text-main">scalable systems</span> that connect backend logic with automation workflows. My journey began when I started experimenting with Django and realized how powerful backend systems can be in transforming raw data into meaningful applications.
+                    </p>
+                    <p>
+                        Over time, I’ve worked across <span class="font-semibold text-text-main">backend development</span> and <span class="font-semibold text-text-main">QA automation</span> — designing <span class="font-semibold text-text-main">RESTful APIs</span>, <span class="font-semibold text-text-main">optimizing ORM queries</span>, and automating test workflows using <span class="font-semibold text-text-main">Selenium</span> and <span class="font-semibold text-text-main">PyTest</span>. I love solving real-world problems by combining backend efficiency with automation reliability.
+                    </p>
+                    <p>
+                        I’m currently interning at K12 Techno Services Pvt. Ltd., where I contribute to projects involving <span class="font-semibold text-text-main">Django REST Framework</span>, <span class="font-semibold text-text-main">FastAPI</span>, <span class="font-semibold text-text-main">PostgreSQL</span>, and Selenium‑based testing frameworks. My focus is on writing <span class="font-semibold text-text-main">clean, scalable code</span> that enhances <span class="font-semibold text-text-main">performance</span>, <span class="font-semibold text-text-main">collaboration</span>, and <span class="font-semibold text-text-main">system reliability</span>.
+                    </p>
+                </div>
+                <div class="md:col-span-2 flex justify-center">
+                    <div class="w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-lg bg-card border-2 border-primary overflow-hidden relative group">
+                        <img src="about.jpg" alt="Aryan Srivastava" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                         <div class="absolute inset-0 bg-primary/4 group-hover:bg-transparent transition-colors duration-300"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="py-20">
+            <h2 class="text-3xl font-bold mb-8 flex items-center">
+                <span class="text-primary mr-3">02.</span> Technical Skills
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                <!-- Core Languages -->
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">Python</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">Primary language for backend & automation.</div>
+                </div>
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">SQL</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">PostgreSQL queries, indexing, performance tuning.</div>
+                </div>
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">C++</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">Strong DSA & systems fundamentals.</div>
+                </div>
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">Java</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">OOP foundations and academic use.</div>
+                </div>
+
+                <!-- Backend Frameworks -->
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">Django</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">Rapid backend, ORM, admin, RBAC.</div>
+                </div>
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">Django REST Framework</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">Serializers, viewsets, permissions, filters.</div>
+                </div>
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">FastAPI</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">High‑performance async APIs, Pydantic.</div>
+                </div>
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">Flask</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">Lightweight microservices & prototypes.</div>
+                </div>
+
+                <!-- Automation & Testing -->
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">Selenium WebDriver</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">UI automation for regression & E2E flows.</div>
+                </div>
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">PyTest</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">Fixtures, parametrization, HTML reports.</div>
+                </div>
+
+                <!-- Databases & Cloud -->
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">PostgreSQL</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">Indexes, query plans, optimized ORM.</div>
+                </div>
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">Docker</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">Containerized dev/test environments.</div>
+                </div>
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">AWS (EC2, S3 Basics)</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">Basic deployment, storage & backups.</div>
+                </div>
+
+                <!-- Frontend -->
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">HTML5</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">Semantic markup & accessibility.</div>
+                </div>
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">CSS3</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">Responsive layouts; utility‑first styling.</div>
+                </div>
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">JavaScript (Basics)</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">DOM manipulation & API calls.</div>
+                </div>
+
+                <!-- Tools & Practices -->
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">Git & GitHub</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">Branching, PRs, code reviews.</div>
+                </div>
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">CI/CD Pipelines</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">Automated build, test, deploy.</div>
+                </div>
+                <div class="bg-card p-4 rounded-lg text-center hover:shadow-lg hover:shadow-primary/20 transition-shadow duration-300 relative group">
+                    <p class="font-semibold">Agile / TDD</p>
+                    <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-2 -translate-y-full whitespace-nowrap rounded-md bg-background text-text-main text-xs px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-primary/40 shadow-lg">Scrum rituals; test‑first mindset.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="py-20">
+            <h2 class="text-3xl font-bold mb-8 flex items-center">
+                <span class="text-primary mr-3">03.</span> Projects
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Project Card 1: DG Generator Runtime & Fuel Efficiency Tracker -->
+                <div class="bg-card rounded-lg p-6 flex flex-col justify-between hover:-translate-y-2 transition-transform duration-300">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <div id="folder-icon-1" class="text-primary"></div>
+                            <div class="space-x-2">
+                                <a href="https://github.com/AryanSrivastava007" id="github-link-1" class="text-text-secondary hover:text-primary transition-colors" aria-label="GitHub"></a>
+                                <a href="#" id="external-link-1" class="text-text-secondary hover:text-primary transition-colors" aria-label="Live/Case Study"></a>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">DG Generator Runtime &amp; Fuel Efficiency Tracker</h3>
+                        <p class="text-text-secondary">
+                            Django-based backend to log runtime, diesel usage, and branch-level efficiency. Optimized ORM queries and indexes to speed up data retrieval and delivered RBAC-backed reporting for 50+ school branches.
+                        </p>
+                    </div>
+                    <div class="mt-4 flex flex-wrap gap-2 text-sm text-text-secondary">
+                        <span class="bg-background px-2 py-1 rounded-full">Django</span>
+                        <span class="bg-background px-2 py-1 rounded-full">DRF</span>
+                        <span class="bg-background px-2 py-1 rounded-full">PostgreSQL</span>
+                        <span class="bg-background px-2 py-1 rounded-full">RBAC</span>
+                        <span class="bg-background px-2 py-1 rounded-full">Indexed Queries</span>
+                    </div>
+                </div>
+
+                <!-- Project Card 2: AI‑Driven Seismic Detection & Safety Automation System -->
+                <div class="bg-card rounded-lg p-6 flex flex-col justify-between hover:-translate-y-2 transition-transform duration-300">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <div id="folder-icon-2" class="text-primary"></div>
+                            <div class="space-x-2">
+                                <a href="https://github.com/AryanSrivastava007" id="github-link-2" class="text-text-secondary hover:text-primary transition-colors" aria-label="GitHub"></a>
+                                <a href="#" id="external-link-2" class="text-text-secondary hover:text-primary transition-colors" aria-label="Live/Case Study"></a>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">AI‑Driven Seismic Detection &amp; Safety Automation</h3>
+                        <p class="text-text-secondary">
+                            End‑to‑end AI platform that detects seismic activity and triggers automated alerts. Reduced manual monitoring by 80% with realtime notifications and an interactive monitoring dashboard.
+                        </p>
+                    </div>
+                    <div class="mt-4 flex flex-wrap gap-2 text-sm text-text-secondary">
+                        <span class="bg-background px-2 py-1 rounded-full">Machine Learning</span>
+                        <span class="bg-background px-2 py-1 rounded-full">LangChain</span>
+                        <span class="bg-background px-2 py-1 rounded-full">OpenAI API</span>
+                        <span class="bg-background px-2 py-1 rounded-full">Twilio</span>
+                        <span class="bg-background px-2 py-1 rounded-full">Streamlit</span>
+                        <span class="bg-background px-2 py-1 rounded-full">Python</span>
+                    </div>
+                </div>
+                <!-- Project Card 3: Smart Car Parking System (Backend) -->
+                <div class="bg-card rounded-lg p-6 flex flex-col justify-between hover:-translate-y-2 transition-transform duration-300">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <div id="folder-icon-3" class="text-primary"></div>
+                            <div class="space-x-2">
+                                <a href="https://github.com/AryanSrivastava007" id="github-link-3" class="text-text-secondary hover:text-primary transition-colors" aria-label="GitHub"></a>
+                                <a href="#" id="external-link-3" class="text-text-secondary hover:text-primary transition-colors" aria-label="Live/Case Study"></a>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Smart Car Parking System (Backend)</h3>
+                        <p class="text-text-secondary">
+                            Django REST backend for multi‑lot parking with slot inventory, bookings, vehicle check‑in/out, and photo capture. Clean architecture with RBAC and optimized PostgreSQL queries for fast lookups.
+                        </p>
+                        <p class="mt-3 italic text-primary">
+                            “Park. Pay. Go — zero friction parking ops.”
+                        </p>
+                    </div>
+                    <div class="mt-4 flex flex-wrap gap-2 text-sm text-text-secondary">
+                        <span class="bg-background px-2 py-1 rounded-full">Django</span>
+                        <span class="bg-background px-2 py-1 rounded-full">DRF</span>
+                        <span class="bg-background px-2 py-1 rounded-full">PostgreSQL</span>
+                        <span class="bg-background px-2 py-1 rounded-full">RBAC</span>
+                        <span class="bg-background px-2 py-1 rounded-full">File Uploads</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="py-20">
+            <h2 class="text-3xl font-bold mb-12 flex items-center">
+                <span class="text-primary mr-3">04.</span> Where I've Worked
+            </h2>
+            <div class="relative border-l-2 border-card pl-8">
+                <!-- Experience: K12 Techno Services -->
+                <div class="mb-12">
+                    <div class="absolute -left-[11px] top-1 w-5 h-5 bg-primary rounded-full border-4 border-background"></div>
+                    <p class="text-primary text-sm font-medium">Jun 2025 – Present</p>
+                    <h3 class="text-xl font-bold mt-1">Software Engineering Intern — Backend &amp; Automation @ K12 Techno Services Pvt. Ltd.</h3>
+                    <p class="text-text-secondary mt-3">
+                        IT Software Department • Python Backend Developer and Automation Engineer working across Django/DRF, FastAPI, PostgreSQL, and Selenium–PyTest to deliver production‑ready features and automation.
+                    </p>
+                    <!-- Client: Notable Placement -->
+                    <div class="mt-5">
+                        <h4 class="font-semibold text-text-main">Client: Notable Placement</h4>
+                        <ul class="list-disc pl-5 text-text-secondary space-y-2 mt-2">
+                            <li>Developed and deployed RESTful APIs using Django REST Framework and FastAPI, enabling seamless data integration across Eduvate modules.</li>
+                            <li>Optimized PostgreSQL ORM queries using <code>select_related</code> and indexing, achieving ~40% improvement in API response efficiency.</li>
+                            <li>Implemented RBAC and modular serializer logic to enhance data security and code reusability.</li>
+                            <li>Collaborated with product and QA teams to deliver backend solutions for DG Runtime, Admissions, and User Management systems.</li>
+                        </ul>
+                    </div>
+                    <!-- Client: Challenges Unlimited -->
+                    <div class="mt-5">
+                        <h4 class="font-semibold text-text-main">Client: Challenges Unlimited</h4>
+                        <ul class="list-disc pl-5 text-text-secondary space-y-2 mt-2">
+                            <li>Automated end‑to‑end regression and UI testing workflows using Selenium and PyTest, improving QA coverage by ~70%.</li>
+                            <li>Integrated custom logger utilities, dynamic locators, and screenshot capture to streamline debugging and reporting.</li>
+                            <li>Designed data‑driven testing frameworks to validate multi‑role functionality across core Eduvate features.</li>
+                        </ul>
+                    </div>
+                    <!-- Client: Broken Galleries -->
+                    <div class="mt-5">
+                        <h4 class="font-semibold text-text-main">Client: Broken Galleries</h4>
+                        <ul class="list-disc pl-5 text-text-secondary space-y-2 mt-2">
+                            <li>Collaborated on ERP enhancement modules (Finance, Admissions, Communication) to streamline backend reporting and data flow.</li>
+                            <li>Resolved critical CRM integration issues, ensuring data consistency between internal systems and external B2B clients.</li>
+                            <li>Supported feature deployment and debugging in staging and production, improving platform reliability for 500+ end users.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 text-center">
+             <h2 class="text-3xl font-bold mb-4 flex items-center justify-center">
+                <span class="text-primary mr-3">05.</span> Get In Touch
+            </h2>
+            <p class="text-text-secondary max-w-lg mx-auto mb-8">
+                I'm currently open to new opportunities and my inbox is always open. Whether you have a question or just want to say hi, I’ll try my best to get back to you!
+            </p>
+            <a href="mailto:aryansrivastava04643@gmail.com" class="inline-block bg-primary text-background font-bold py-4 px-8 rounded-md hover:bg-primary-hover transition-transform duration-300 hover:scale-105">
+                Say Hello
+            </a>
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="py-6">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
+            <div class="flex space-x-6 mb-4">
+                <a href="#" id="footer-github" class="text-text-secondary hover:text-primary transition-colors"></a>
+                <a href="#" id="footer-linkedin" class="text-text-secondary hover:text-primary transition-colors"></a>
+                <a href="#" id="footer-twitter" class="text-text-secondary hover:text-primary transition-colors"></a>
+            </div>
+            <p class="text-text-secondary text-sm">Designed & Built by Aryan Srivastava</p>
+            <p class="text-text-secondary text-xs mt-1">Last Updated: October 2025</p>
+        </div>
+    </footer>
+
+    <script>
+        // This event listener ensures that the script runs only after the entire
+        // HTML document has been loaded and parsed, preventing race conditions
+        // where the script tries to access libraries like LucideReact before they are ready.
+        document.addEventListener('DOMContentLoaded', () => {
+            // Scroll-scale effect for hero name and rotating skills
+            const heroName = document.getElementById('hero-name');
+            const heroRotate = document.getElementById('hero-rotator');
+            if (heroName) {
+                let lastScrollY = window.scrollY;
+                let ticking = false;
+                const maxAt = 700;          // px range over which scaling happens
+                const maxScaleName = 1.15;  // name size at top
+                const minScaleName = 0.88;  // name size after you've scrolled ~maxAt
+                const maxScaleRot = 1.08;   // rotator size at top (slightly less)
+                const minScaleRot = 0.92;   // rotator size after scroll
+                const minOpacity = 0.5;     // keep some visibility while scrolling
+              
+                const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+              
+                const update = (y) => {
+                    const t = clamp(y / maxAt, 0, 1);
+                    const scaleName = clamp(maxScaleName - t * (maxScaleName - minScaleName), minScaleName, maxScaleName);
+                    const opacity = clamp(1 - t * 0.5, minOpacity, 1);
+                    heroName.style.transform = `scale(${scaleName})`;
+                    heroName.style.opacity = String(opacity);
+                    if (heroRotate) {
+                        const scaleRot = clamp(maxScaleRot - t * (maxScaleRot - minScaleRot), minScaleRot, maxScaleRot);
+                        heroRotate.style.transform = `scale(${scaleRot})`;
+                        heroRotate.style.opacity = String(opacity);
+                    }
+                };
+              
+                update(lastScrollY); // initial
+              
+                window.addEventListener('scroll', () => {
+                    lastScrollY = window.scrollY;
+                    if (!ticking) {
+                        window.requestAnimationFrame(() => {
+                            update(lastScrollY);
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                }, { passive: true });
+            }
+
+
+            // ---- Typing effect for skills with blinking cursor ----
+            (function () {
+                const container = document.getElementById('hero-rotator');
+                const textEl = document.getElementById('hero-rotator-text');
+                if (!container || !textEl) return;
+
+                const skills = [
+                    'Python',
+                    'Django',
+                    'Django REST Framework',
+                    'FastAPI',
+                    'Selenium–PyTest',
+                    'PostgreSQL',
+                    'Docker',
+                    'AWS (EC2, S3)',
+                    'Git & GitHub',
+                    'CI/CD Pipelines',
+                    'HTML5',
+                    'CSS3',
+                    'JavaScript (Basics)',
+                    'C++',
+                    'Java'
+                ];
+
+                // If user prefers reduced motion, fall back to non-animated swap
+                const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                if (reduced) {
+                    let i = 0;
+                    textEl.textContent = skills[0];
+                    i = 1;
+                    setInterval(() => {
+                        textEl.textContent = skills[i % skills.length];
+                        i++;
+                    }, 1800);
+                    return;
+                }
+
+                let i = 0;               // which skill
+                let j = 0;               // which char of current skill
+                let typing = true;       // typing or deleting
+                const typeSpeed = 90;    // ms per char when typing
+                const delSpeed  = 55;    // ms per char when deleting
+                const pauseType = 850;   // pause after full word typed
+                const pauseDel  = 280;   // pause after deletion before next word
+
+                const tick = () => {
+                    const word = skills[i % skills.length];
+                    if (typing) {
+                        // type next char
+                        j++;
+                        textEl.textContent = word.slice(0, j);
+                        if (j === word.length) {
+                            typing = false;
+                            setTimeout(tick, pauseType);
+                        } else {
+                            setTimeout(tick, typeSpeed);
+                        }
+                    } else {
+                        // delete prev char
+                        j--;
+                        textEl.textContent = word.slice(0, j);
+                        if (j === 0) {
+                            typing = true;
+                            i++;
+                            setTimeout(tick, pauseDel);
+                        } else {
+                            setTimeout(tick, delSpeed);
+                        }
+                    }
+                };
+                // kick off
+                textEl.textContent = '';
+                setTimeout(tick, 300);
+            })();
+
+            // Render Lucide Icons (defensive so failures don't break other scripts)
+            let Folder, Github, ExternalLink, Linkedin, Twitter;
+            let e = null;
+            try {
+                // Only assign if the global is available
+                if (window.LucideReact && window.React && window.ReactDOM) {
+                    ({ Folder, Github, ExternalLink, Linkedin, Twitter } = window.LucideReact);
+                    e = React.createElement;
+                }
+            } catch (err) {
+                // Ignore icon errors; continue running other features
+                console.warn('Lucide icons not available:', err);
+            }
+
+            // Project Card Icons (only if icons + React are available)
+            if (Folder && Github && ExternalLink && e) {
+                for (let i = 1; i <= 3; i++) {
+                    const folderEl = document.getElementById(`folder-icon-${i}`);
+                    const ghEl = document.getElementById(`github-link-${i}`);
+                    const extEl = document.getElementById(`external-link-${i}`);
+                    if (folderEl) ReactDOM.render(e(Folder, { size: 40 }), folderEl);
+                    if (ghEl) ReactDOM.render(e(Github, { size: 24 }), ghEl);
+                    if (extEl) ReactDOM.render(e(ExternalLink, { size: 24 }), extEl);
+                }
+                // Footer Icons
+                const fg = document.getElementById('footer-github');
+                const fl = document.getElementById('footer-linkedin');
+                const ft = document.getElementById('footer-twitter');
+                if (fg) ReactDOM.render(e(Github, { size: 24 }), fg);
+                if (fl) ReactDOM.render(e(Linkedin, { size: 24 }), fl);
+                if (ft) ReactDOM.render(e(Twitter, { size: 24 }), ft);
+            }
+
+            // Simple smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if(targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            // --- "Links" trigger with genie open/close & click-outside handling ---
+            (function () {
+                const trigger = document.getElementById('links-trigger');
+                const panel = document.getElementById('links-panel');
+                if (!trigger || !panel) return;
+
+                let open = false;
+                const setExpanded = (v) => trigger.setAttribute('aria-expanded', v ? 'true' : 'false');
+
+                const show = (clickX, clickY) => {
+                    if (open) return;
+                    open = true;
+                    setExpanded(true);
+                    panel.classList.remove('hidden');
+                    const rect = panel.getBoundingClientRect();
+                    const originX = Math.min(Math.max(clickX - rect.left, 0), rect.width);
+                    const originY = Math.min(Math.max(clickY - rect.top, 0), rect.height);
+                    panel.style.transformOrigin = `${originX}px ${originY}px`;
+                    panel.animate([
+                        { transform: 'scale(0.05)', opacity: 0, filter: 'blur(6px)' },
+                        { transform: 'scale(1)', opacity: 1, filter: 'blur(0px)' }
+                    ], { duration: 360, easing: 'cubic-bezier(0.22,1,0.36,1)' });
+                };
+
+                const hide = () => {
+                    if (!open) return;
+                    open = false;
+                    setExpanded(false);
+                    const rect = panel.getBoundingClientRect();
+                    panel.style.transformOrigin = `${rect.width - 12}px 12px`;
+                    const anim = panel.animate([
+                        { transform: 'scale(1)', opacity: 1, filter: 'blur(0px)' },
+                        { transform: 'scale(0.05)', opacity: 0, filter: 'blur(6px)' }
+                    ], { duration: 260, easing: 'cubic-bezier(0.22,1,0.36,1)' });
+                    anim.onfinish = () => { panel.classList.add('hidden'); };
+                };
+
+                // Toggle on click; prevent default scroll behavior
+                trigger.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const clickX = e.clientX;
+                    const clickY = e.clientY;
+                    if (!open) show(clickX, clickY);
+                    else hide();
+                });
+
+                // Close when clicking a link (navigate after animation)
+                panel.addEventListener('click', (e) => {
+                    const a = e.target.closest('a');
+                    if (!a) return;
+                    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; // respect modifiers
+                    e.preventDefault();
+                    const href = a.getAttribute('href');
+                    const target = a.getAttribute('target');
+                    hide();
+                    setTimeout(() => {
+                        if (target === '_blank') window.open(href, '_blank', 'noopener');
+                        else window.location.href = href;
+                    }, 200);
+                });
+
+                // Click-outside & Esc to close
+                document.addEventListener('click', (e) => {
+                    if (!open) return;
+                    if (panel.contains(e.target) || trigger.contains(e.target)) return;
+                    hide();
+                }, { capture: true });
+                document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hide(); });
+            })();
+        });
+    </script>
+</body>
+</html>
+
